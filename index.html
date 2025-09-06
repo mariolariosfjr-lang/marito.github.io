@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Marito.com — Playground</title>
+  <meta name="description" content="Marito code playground — write, run, and share Marito code">
+  <style>
+    :root {
+      --bg: #0f1720;
+      --panel: #0b1220;
+      --muted: #98a0b3;
+      --accent: #7dd3fc;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#071021);color:#e6eef8;}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px;}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+    .logo{width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,#083a3b,#0b2740);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-family:var(--mono);}
+    h1{font-size:20px;margin:0;padding:0}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+    main{display:grid;grid-template-columns:1fr 420px;gap:18px;align-items:start;}
+    .editor-card{background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6);}
+    textarea#editor{width:100%;height:520px;border:0;background:#051226;color:#dff6ff;padding:12px;border-radius:8px;font-family:var(--mono);font-size:13px;resize:vertical;box-sizing:border-box;}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:10px;}
+    button{background:linear-gradient(180deg,#0ea5a7,#066b6b);border:0;padding:8px 12px;border-radius:8px;color:#072025;font-weight:700;cursor:pointer;}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600;}
+    .panel{background:linear-gradient(180deg,#061124,#031021);border-radius:10px;padding:12px;}
+    .output{height:320px;overflow:auto;background:#020617;border-radius:8px;padding:12px;font-family:var(--mono);font-size:13px;color:#bfe9ff;white-space:pre-wrap;}
+    .sidebar{display:flex;flex-direction:column;gap:12px;}
+    .meta{display:flex;gap:8px;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:6px;}
+    .examples{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;font-size:13px;color:var(--muted);max-height:260px;overflow:auto;}
+    .help{font-size:13px;color:var(--muted);line-height:1.5;padding:10px;background:rgba(255,255,255,0.01);border-radius:8px;}
+    footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center;padding:12px 0;}
+    a.inline{color:var(--accent);text-decoration:none;font-weight:600}
+    @media(max-width:980px){main{grid-template-columns:1fr;}.sidebar{order:2}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">M</div>
+      <div>
+        <h1>Marito Playground</h1>
+        <p class="lead">Type Marito code on the left, press Run, and see output on the right.</p>
+      </div>
+    </header>
+    <main>
+      <section class="editor-card">
+        <label for="editor" style="font-size:12px;color:var(--muted);">Editor</label>
+        <textarea id="editor">
+/greeting = "Hello Marito!";
+
+// Welcome to the Marito playground. This sample file contains many examples that
+// demonstrate Marito syntax mapped to JavaScript. You can edit, run, and share.
+
+func greet(name) {
+  cg("greeting:", /greeting);
+  cg("Hello", name, "- welcome to Marito.");
+}
+
+func makeCounter(start) {
+  /count = start;
+  func next() {
+    /count = count + 1;
+    cg("count:", count);
+    return count;
+  }
+  return next;
+}
+
+ /counter = makeCounter(0);
+counter();
+counter();
+counter();
+
+// Arrays and loops example
+/numbers = [1, 2, 3, 4, 5];
+func sumArray(arr) {
+  /i = 0;
+  /sum = 0;
+  w (i < arr.length) {
+    /sum = sum + arr[i];
+    i = i + 1;
+  }
+  cg("sum:", sum);
+  return sum;
+}
+sumArray(/numbers);
+
+// Using remember (if) and range (block marker)
+func checkEven(n) {
+  remember (n % 2 === 0) range {
+    cg(n, "is even");
+  }
+  remember (n % 2 !== 0) range {
+    cg(n, "is odd");
+  }
+}
+checkEven(7);
+checkEven(8);
+
+// Using HTMLshow to change DOM
+// Ensure there is an element with id="demo" to see this effect.
+func renderDemo() {
+  if (document.getElementById("demo")) {
+    document.getElementById("demo").HTMLshow = "Rendered by Marito: " + /greeting;
+  }
+}
+renderDemo();
+
+// Import example (static import mapping)
+able fo ru utils f "./utils.js";
+// The line above maps to: import * as utils as from "./utils.js"
+
+// Unsafe eval example (avoid in public sites)
+// unsafe("2 + 2");
+
+// Long example: simple DOM-based counter without try/catch
+func setupDomCounter() {
+  var container = document.getElementById("dom-counter");
+  if (!container) return;
+  container.HTMLshow = "";
+  /i = 0;
+  func tick() {
+    /i = i + 1;
+    container.HTMLshow = "Ticks: " + i;
+    if (i < 5) {
+      window.setTimeout(tick, 400);
+    } else {
+      container.HTMLshow = "Finished ticks: " + i;
+    }
+  }
+  tick();
+}
+setupDomCounter();
+
+// More examples below show common Marito idioms and patterns.
+
+// Example: mapping of arithmetic and strings
+/a = 10;
+/b = 3;
+cg("a+b=", /a + /b);
+cg("a*b=", /a * /b);
+cg("a/b=", /a / /b);
+
+// Example: nested functions and closures
+func adder(x) {
+  func add(y) {
+    return x + y;
+  }
+  return add;
+}
+ /add5 = adder(5);
+cg("5+2=", add5(2));
+
+// Example: string templates (use normal JS inside unsafe if needed)
+/name = "MaritoUser";
+cg("Welcome " + /name + " — enjoy coding!");
+
+// Example: simulate range-based loops with while
+func rangeSim(start, end) {
+  /i = start;
+  w (i <= end) {
+    cg("range:", i);
+    i = i + 1;
+  }
+}
+rangeSim(1, 4);
+
+// Example: working with objects
+/person = {name: "Alex", age: 12};
+cg("Person:", /person.name, "age", /person.age);
+
+// Example: small algorithm — factorial (iterative)
+func factorial(n) {
+  /res = 1;
+  /i = 1;
+  w (i <= n) {
+    /res = res * i;
+    i = i + 1;
+  }
+  cg("fact", n, "=", res);
+  return res;
+}
+factorial(5);
+
+// Example: using arrays and pushing values
+/stack = [];
+func pushToStack(v) {
+  /stack.push(v);
+  cg("pushed", v);
+}
+pushToStack(42);
+pushToStack("hello");
+cg("stack now", /stack);
+
+// End of editor sample content
+        </textarea>
+        <div class="controls">
+          <button id="runBtn">Run</button>
+          <button id="clearBtn" class="secondary">Clear Output</button>
+          <button id="formatBtn" class="secondary">Format</button>
+          <button id="saveBtn" class="secondary">Save .marito</button>
+          <div style="flex:1"></div>
+          <label style="font-size:12px;color:var(--muted);">Theme</label>
+        </div>
+      </section>
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="meta">
+            <div>Output</div>
+            <div style="color:var(--muted);font-size:12px">Console</div>
+          </div>
+          <div id="output" class="output">
+Ready. Type Marito code and press Run.
+          </div>
+        </div>
+        <div class="panel">
+          <div style="font-weight:700;margin-bottom:6px">Marito Cheatsheet</div>
+          <div class="help">
+            /name = ...   — declare variable (shorthand for let)
+            <br>func()      — define function
+            <br>w () {}     — while loop
+            <br>remember () range {} — if (...) { ... }
+            <br>cg()         — console.log
+            <br>cr()         — console.error
+            <br>HTMLshow     — innerHTML assignment
+            <br>unsafe()     — eval (dangerous)
+            <br>able fo ru f — import * as ... from ...
+          </div>
+        </div>
+        <div class="panel">
+          <div style="font-weight:700;margin-bottom:6px">Examples</div>
+          <div class="examples">
+            <div style="margin-bottom:6px">1) Hello world — /g = "Hi"; func main(){ cg(/g); } main();</div>
+            <div style="margin-bottom:6px">2) Loop — /i=0; w (i<3){ cg(i); i=i+1; }</div>
+            <div style="margin-bottom:6px">3) DOM — document.getElementById('demo').HTMLshow = "Hi";</div>
+            <div style="margin-bottom:6px">4) Import — able fo ru lib f "./lib.js";</div>
+            <div style="margin-bottom:6px">5) Unsafe — unsafe("2+2");  // not recommended</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+    <section style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="panel">
+        <div style="font-weight:700;margin-bottom:8px">About Marito</div>
+        <div style="color:var(--muted);font-size:13px;line-height:1.45">
+          Marito is a playful minimal language that maps to JavaScript through a transpiler.
+          The site is a lightweight playground to learn the syntax and share snippets.
+        </div>
+      </div>
+      <div class="panel">
+        <div style="font-weight:700;margin-bottom:8px">Share & Save</div>
+        <div style="color:var(--muted);font-size:13px;line-height:1.45">
+          Use the Save button to export your Marito code as a .marito file or copy the
+          transpiled JavaScript for embedding. Sharing to Gist or GitHub is supported later.
+        </div>
+      </div>
+    </section>
+    <section class="panel" style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:6px">Reference & Notes</div>
+      <div style="color:var(--muted);font-size:13px;line-height:1.5">
+        This playground intentionally avoids try/catch/finally and promise chains in runtime execution.
+        Execution is direct and errors thrown by user code will surface as console output in the browser console.
+        Avoid using unsafe() with untrusted input — it maps to eval().
+      </div>
+    </section>
+    <footer>
+      <div>Made with ❤️ for Marito coding — preview site</div>
+    </footer>
+  </div>
+  <div style="display:none">
+    <div id="demo"></div>
+    <div id="dom-counter"></div>
+  </div>
+  <script>
+  // Simple in-browser Marito -> JS transpiler (basic token mapping)
+  function transpileMarito(code){
+    // variable shorthand: /name -> let name
+    code = code.replace(/\/([A-Za-z_$][A-Za-z0-9_$]*)/g, "let $1");
+    const map = {
+      "func": "function",
+      "w": "while",
+      "remember": "if",
+      "range": "",
+      "cg": "console.log",
+      "cr": "console.error",
+      "HTMLshow": "innerHTML",
+      "unsafe": "eval",
+      "able": "import",
+      "fo": "*",
+      "ru": "as",
+      "f": "from",
+      "const": "do"
+    };
+    for(const k in map){
+      const v = map[k];
+      const re = new RegExp("\\b"+k+"\\b","g");
+      code = code.replace(re, v);
+    }
+    return code;
+  }
+
+  // Capture logs into the output element without using try/catch or promises
+  function captureConsole(outputEl){
+    const origLog = console.log;
+    const origErr = console.error;
+    const buffer = [];
+    console.log = function(...args){ buffer.push(args.join(" ")); origLog.apply(console,args); };
+    console.error = function(...args){ buffer.push("[ERR] "+args.join(" ")); origErr.apply(console,args); };
+    return {
+      flush: function(){ const txt = buffer.join("\n"); buffer.length=0; return txt; },
+      restore: function(){ console.log = origLog; console.error = origErr; }
+    };
+  }
+
+  document.getElementById("runBtn").addEventListener("click", function(){
+    const editor = document.getElementById("editor");
+    const outputEl = document.getElementById("output");
+    outputEl.textContent = "Running...";
+    const js = transpileMarito(editor.value);
+    const cap = captureConsole(outputEl);
+    // Direct execution — no try/catch as requested by the user
+    new Function(js)();
+    const out = cap.flush();
+    cap.restore();
+    outputEl.textContent = out || "(no output)";
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    document.getElementById("output").textContent = "";
+  });
+
+  document.getElementById("formatBtn").addEventListener("click", function(){
+    const e = document.getElementById("editor");
+    e.value = e.value.split("\n").map(l=>l.replace(/\s+$/,"")).join("\n").replace(/\n{3,}/g,"\n\n") + "\n";
+  });
+
+  document.getElementById("saveBtn").addEventListener("click", function(){
+    const code = document.getElementById("editor").value;
+    const blob = new Blob([code], {type: "text/plain;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "snippet.marito"; document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // Populate editor with a longer starter sample if short
+  (function ensureSample(){
+    const e = document.getElementById("editor");
+    if(e.value.split("\n").length < 30){
+      e.value = e.value + "\n// Add your Marito code above this line\n";
+    }
+  })();
+  </script>
+    <section class="panel" style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:8px">Advanced Examples</div>
+      <div style="color:var(--muted);font-size:13px;line-height:1.45">
+        Below are additional Marito examples to study. These are real snippets you can
+        copy into the editor and experiment with. They show closures, array methods,
+        simulated modules, and DOM interaction using HTMLshow.
+      </div>
+      <pre style="background:#001022;border-radius:8px;padding:10px;margin-top:10px;font-family:var(--mono);font-size:12px;color:#dff6ff;">
+/fib = function(n) {
+  /a = 0;
+  /b = 1;
+  /i = 0;
+  w (i < n) {
+    cg(a);
+    /t = a + b;
+    /a = b;
+    /b = t;
+    i = i + 1;
+  }
+}
+
+fib(10);
+      </pre>
+    </section>
+    <section class="panel" style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:8px">FAQ</div>
+      <div style="color:var(--muted);font-size:13px;line-height:1.45">
+        Q: Why map tokens instead of designing a full parser?
+        A: Mapping is simple and fast for a learning language; a real compiler can be added later.
+      </div>
+    </section>
+    <section class="panel" style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:8px">Tips & Shortcuts</div>
+      <div style="color:var(--muted);font-size:13px;line-height:1.45">
+        - Use Format to normalize whitespace.
+        - Save snippets frequently.
+        - Use HTMLshow to update page parts safely.
+      </div>
+    </section>
+    <section class="panel" style="margin-top:12px">
+      <div style="color:var(--muted);font-size:13px">Contributors: Marito Community</div>
+    </section>
+</html>
